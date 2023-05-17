@@ -33,3 +33,18 @@ def calculate_ingridients(num_cups):
     print(f"{coffee_beans} g of coffee beans")
 num_of_cups=int(input("how many cups of coffee U will need?:"))
 calculate_ingridients(num_of_cups)
+def check_resources(water, milk, coffee_beans, num_cups):
+    cups_possible= min(water // 200, milk // 50, coffee_beans // 15)
+    if cups_possible >= num_cups:
+        if cups_possible == num_cups:
+            print("Yes, I can make that amount of coffee")
+        else:
+            extra_cups = cups_possible-num_cups
+            print(f"Yes, I can make that amount of coffee, and even {extra_cups} more than that")
+    else:
+        print(f"Sorryan, but i can make only {cups_possible} cups of coffee")
+water_available = int(input("write how many ml of water machine has:"))
+milk_available = int(input("write how many ml of milk machine has:"))
+coffee_beans_available = int(input("write how many grams of coffee beans machine has:"))
+num_of_cups=int(input("how many cups of coffee U will need?:"))
+check_resources(water_available,milk_available,coffee_beans_available, num_of_cups)
