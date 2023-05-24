@@ -1,125 +1,125 @@
-def make_espresso():
-    print("starting to make espresso")
-    print("grinding coffee beans")
-    print("boiling water")
-    print("mixing boiled water with crushed coffee beans")
-    print("pouring coffee into the cup")
-    print("Expresso is ready!")
-def make_cappuccino():
-    print("starting to make cappuccino")
-    print("grinding coffee beans")
-    print("boiling water")
-    print("mixing boiled water with crushed coffee beans")
-    print("pouring coffee into the cup")
-    print("frothing milk")
-    print("Pouring frothed milk into the cup")
-    print("Cappuccino is ready!")
-def make_late():
-    print("Starting to make a latte")
-    print("Grinding coffee beans")
-    print("Boiling water")
-    print("Mixing boiled water with crushed coffee beans")
-    print("Pouring coffee into the cup")
-    print("Frothing milk")
-    print("Pouring frothed milk into the cup")
-    print("Latte is ready!")
-def calculate_ingridients(num_cups):
-    water=num_cups*200
-    milk=num_cups*50
-    coffee_beans=num_cups*15
-    print(f"For {num_cups} cups of coffee U will need:")
-    print(f"{water} ml of water")
-    print(f"{milk} ml of milk")
-    print(f"{coffee_beans} g of coffee beans")
-num_of_cups=int(input("how many cups of coffee U will need?:"))
-calculate_ingridients(num_of_cups)
-def check_resources(water, milk, coffee_beans, num_cups):
-    cups_possible= min(water // 200, milk // 50, coffee_beans // 15)
-    if cups_possible >= num_cups:
-        if cups_possible == num_cups:
-            print("Yes, I can make that amount of coffee")
-        else:
-            extra_cups = cups_possible-num_cups
-            print(f"Yes, I can make that amount of coffee, and even {extra_cups} more than that")
-    else:
-        print(f"Sorryan, but i can make only {cups_possible} cups of coffee")
-water_available = int(input("write how many ml of water machine has:"))
-milk_available = int(input("write how many ml of milk machine has:"))
-coffee_beans_available = int(input("write how many grams of coffee beans machine has:"))
-num_of_cups=int(input("how many cups of coffee U will need?:"))
-check_resources(water_available,milk_available,coffee_beans_available, num_of_cups)
+#I will make a simulator типа coffee machine!
 class CoffeeMachine:
     def __init__(self):
-        self.water=400
-        self.milk=540
-        self.coffee_beans=120
-        self.disposable_cups=9
-        self.money=550
+        self.water = 400
+        self.milk = 540
+        self.coffee_beans = 120
+        self.disposable_cups = 9
+        self.money = 550
+        self.state = "main_menu"
+
+    def process_input(self, user_input):
+        if self.state == "main_menu":
+            if user_input == "buy":
+                self.state = "buy_menu"
+            elif user_input == "fill":
+                self.state = "fill_menu"
+            elif user_input == "take":
+                self.take_money()
+            elif user_input == "remaining":
+                self.print_state()
+            elif user_input == "exit":
+                return False
+            else:
+                print("Invalid action!")
+        elif self.state == "buy_menu":
+            if user_input == "back":
+                self.state = "main_menu"
+            else:
+                self.buy_coffee(user_input)
+        elif self.state == "fill_menu":
+            self.fill_machine(user_input)
+
+        return True
+
     def print_state(self):
-        print("Coffee machine has:")
-        print(f"{self.water} ml of water")
-        print(f"{self.milk} ml of milk")
-        print(f"{self.coffee_beans} g of coffee beans")
-        print(f"{self.disposable_cups} of cups")
+        print("The coffee machine has:")
+        print(f"{self.water} of water")
+        print(f"{self.milk} of milk")
+        print(f"{self.coffee_beans} of coffee beans")
+        print(f"{self.disposable_cups} of disposable cups")
         print(f"{self.money} of money")
-    def can_make_coffee(self, water_needed, milk_needed, coffee_beans_needed, cost):
+
+    def can_make_coffee(self, water_needed, milk_needed, coffee_beans_needed):
         if self.water < water_needed:
             return "water"
         if self.milk < milk_needed:
             return "milk"
         if self.coffee_beans < coffee_beans_needed:
-            return "coffe beans"
-        if self.disposable_cups < 1:
+            return "coffee beans"
+        if self.disposable_cups == 0:
             return "disposable cups"
-        return "yes"
-    def make_coffee(self,water_needed, milk_needed, coffee_beans_needed, cost):
-        if self.can_make_coffee(water_needed, milk_needed, coffee_beans_needed)=="yes":
-            print("I have enough resources to make coffee...")
+        return None
+
+    def buy_coffee(self, coffee_type):
+        if coffee_type == "1":
+            water_needed = 250
+            milk_needed = 0
+            coffee_beans_needed = 16
+            cost = 4
+        elif coffee_type == "2":
+            water_needed = 350
+            milk_needed = 75
+            coffee_beans_needed = 20
+            cost = 7
+        elif coffee_type == "3":
+            water_needed = 200
+            milk_needed = 100
+            coffee_beans_needed = 12
+            cost = 6
+        else:
+            print("Invalid coffee type! Please try again.")
+            return
+
+        ingredient = self.can_make_coffee(water_needed, milk_needed, coffee_beans_needed)
+        if ingredient:
+            print(f"Sorryan, not enough {ingredient}!")
+        else:
+            print("I have enough resources, making you a coffee!")
             self.water -= water_needed
             self.milk -= milk_needed
             self.coffee_beans -= coffee_beans_needed
             self.disposable_cups -= 1
-            print("Coffee is ready!\n")
-    def buy_coffee(self):
-        print("What do u prefer? 1 - espresso \n2 - capuccino \n3 - late")
-        choice = input()
-        if choice == "1":
-            self.make_coffee(250, 0, 16, 4)
-        elif choice == "2":
-            self.make_coffee(200, 100, 12, 6)
-        elif choice =="3":
-            self.make_coffee(350, 75, 20, 7)
-        else:
-            print("invalid choice \n")
-    def fill_machine(self):
-        print("how many ml of water u want to add?:")
-        water_added = int(input())
-        print("how many ml milk u want to add?:")
-        milk_added = int(input())
-        print("how many grams of coffee beans u want to add?:")
-        coffee_beans_added = int(input())
-        print("how many cups u want to add?:")
-        cups_added = int(input())
+            self.money += cost
 
-        self.water += water_added
-        self.milk += milk_added
-        self.coffee_beans += coffee_beans_added
-        self.disposable_cups += cups_added
+    def fill_machine(self, user_input):
+        if self.state == "fill_menu":
+            if user_input.isdigit():
+                self.water += int(user_input)
+                self.state = "fill_menu_milk"
+            else:
+                print("Invalid input! Please enter a number.")
+        elif self.state == "fill_menu_milk":
+            if user_input.isdigit():
+                self.milk += int(user_input)
+                self.state = "fill_menu_coffee_beans"
+            else:
+                print("Invalid input! Please enter a number.")
+        elif self.state == "fill_menu_coffee_beans":
+            if user_input.isdigit():
+                self.coffee_beans += int(user_input)
+                self.state = "fill_menu_disposable_cups"
+            else:
+                print("Invalid input! Please enter a number.")
+        elif self.state == "fill_menu_disposable_cups":
+            if user_input.isdigit():
+                self.disposable_cups += int(user_input)
+                self.state = "main_menu"
+            else:
+                print("Invalid input! Please enter a number.")
+
     def take_money(self):
-        print(f"I gave u ${self.money}")
+        print(f"I gave you {self.money}")
         self.money = 0
 
-coffee_machine = CoffeeMachine()
 
-while True:
-    coffee_machine.print_state()
-    print("print action(buy, fill, take):")
-    action=input()
-    if action == "buy":
-        coffee_machine.buy_coffee()
-    elif action=="fill":
-        coffee_machine.fill_machine()
-    elif action=="take":
-        coffee_machine.take_money()
-    else:
-        print("Invalid action!\n")
+def main():
+    coffee_machine = CoffeeMachine()
+    while True:
+        user_input = input("Write action (buy, fill, take, remaining, exit):\n")
+        if not coffee_machine.process_input(user_input):
+            break
+
+
+if __name__ == "__main__":
+    main()
